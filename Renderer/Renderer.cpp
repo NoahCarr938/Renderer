@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "Utils.h"
 
 namespace aie
 {
@@ -46,6 +47,13 @@ namespace aie
         glDeleteVertexArrays(1, &Geo.Vao);
 
         Geo = {};
+    }
+
+    Shader LoadShader(const char* VertPath, const char* FragPath)
+    {
+        std::string VertSource = DumpToString(VertPath);
+        std::string FragSource = DumpToString(FragPath);
+        return MakeShader(VertSource.c_str(), FragSource.c_str());
     }
 
     Shader MakeShader(const char* vertSource, const char* fragSource)
@@ -107,6 +115,11 @@ namespace aie
     void SetUniform(const Shader& shad, GLuint location, const glm::mat4& value)
     {
         glProgramUniformMatrix4fv(shad.Program, location, 1, GL_FALSE, glm::value_ptr(value));
+    }
+
+    void SetUniform(const Shader& shad, GLuint location, float value)
+    {
+        glProgramUniform1fv(shad.Program, location, 1, &value);
     }
 
 }
