@@ -1,6 +1,8 @@
 #include "Renderer.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "Utils.h"
+#define STB_IMAGE_IMPLEMENTATION 1
+#include <stb_image.h>
 
 namespace aie
 {
@@ -28,7 +30,8 @@ namespace aie
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)16);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, UVs));
+        // or 1, 4
 
         //unbinding buffers to prevent overwriting the information accidentally
         glBindVertexArray(0);
@@ -101,6 +104,90 @@ namespace aie
         shad = {};
     }
 
+    Texture MakeTexture(unsigned Width, unsigned Height, unsigned Channels, const unsigned char* Pixels)
+    {
+        // create our return object
+        Texture RetVal = { 0, Width, Height, Channels };
+        // setup the encoding in a way that open gl understands
+        GLenum OGLFormat = GL_RED;
+        switch (Channels)
+        {
+        case 1:
+            OGLFormat = GL_RED;     // monochrome
+            break;
+        case 2:
+            OGLFormat = GL_RG;      // Not many uses for a 2 channel solution
+            break;
+        case 3:
+            OGLFormat = GL_RGB;     // color or data (specificallt directions or offsets)
+            break;
+        case 4:
+            OGLFormat = GL_RGBA;    // color or data (that needs a fourth channel)
+            break;
+        default:
+            assert(false && "Unknown channel configuration!");
+        }
+        // create a texture object on open gl and bind it
+        glGenTextures(1, &RetVal.Handle);
+        glBindTexture(GL_TEXTURE_2D, RetVal.Handle);
+        // buffer in the texture data
+        glTexImage2D(GL_TEXTURE_2D,
+            0,
+            OGLFormat,
+            Width,
+            Height,
+            0,
+            OGLFormat,
+            GL_UNSIGNED_BYTE,
+            Pixels);
+        // describe the data
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // return
+        return RetVal;
+    }
+
+    Texture LoadTexture(const char* ImagePath)
+    {
+        // create some variables to be filled in by stb
+        int ImageWidth = 0;
+        int ImageHeight = 0;
+        int ImageFormat = 0;
+
+        unsigned char* RawPixelData = nullptr;
+
+        // create our return value
+        Texture RetVal = {};
+        // load the texture
+        // aling with bottom left origin
+        stbi_set_flip_vertically_on_load(true);
+
+        RawPixelData = stbi_load(ImagePath,
+            &ImageWidth,
+            &ImageHeight,
+            &ImageFormat,
+            STBI_default);
+
+        assert(RawPixelData != nullptr && "Failed to load image!");
+
+        RetVal = MakeTexture(ImageWidth, ImageHeight, ImageFormat, RawPixelData);
+
+        stbi_image_free(RawPixelData);
+
+        // return the texture
+        return RetVal;
+    }
+
+    void FreeTexture(Texture& tex)
+    {
+        glDeleteTextures(1, &tex.Handle);
+        // zero out to prevent accidental reuse
+        tex = {};
+    }
+
     void Draw(const Shader& shad, const Geometry& geo)
     {
         // bind the shader program
@@ -120,6 +207,16 @@ namespace aie
     void SetUniform(const Shader& shad, GLuint location, float value)
     {
         glProgramUniform1fv(shad.Program, location, 1, &value);
+    }
+
+    void SetUniform(const Shader& shad, GLuint location, const Texture& tex, int TextureSlot)
+    {
+        // Specify the texture slot we want to activate
+        glActiveTexture(GL_TEXTURE0 + TextureSlot);
+        // bind the texture to that slot
+        glBindTexture(GL_TEXTURE_2D, tex.Handle);
+        // specify that texture slot as the value for that uniform
+        glProgramUniform1i(shad.Program, location, TextureSlot);
     }
 
 }

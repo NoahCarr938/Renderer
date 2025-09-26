@@ -13,9 +13,9 @@ int main()
 
     Vertex triVerts[] =
     {
-        {{ -.5f, -.5f, 0, 1 }, {1, 0, 1, 1} },
-        {{ .5f, -.5f, 0, 1 }, { 1, 0, 0, 1 } },
-        {{ 0, .5f, 0, 1 }, { 1, 0, 0, 1} }
+        {{ -.5f, -.5f, 0, 1 }, {0.0f, 0.0f } }, // bottom left
+        {{ .5f, -.5f, 0, 1 }, { 1.0f, 0.0f } }, // bottom right
+        {{ 0, .5f, 0, 1 }, { .5f, 1.0f} }  // top
     };
     unsigned int triIndices[] = { 0, 1, 2 };
 
@@ -23,22 +23,8 @@ int main()
 
     Shader basicShaderFromFile = LoadShader("Res/Shaders/Basic.vert", "Res/Shaders/Basic.frag");
     Shader cameraShaderFromFile = LoadShader("Res/Shaders/BasicCamera.vert", "Res/Shaders/Basic.frag");
+    Shader TexShadFromFile = LoadShader("Res/Shaders/BasicCamera.vert", "Res/Shaders/Tex.frag");
     
-
-    //const char * basicVert =
-    //    "#version 430 core\n"
-    //    "layout (location = 0) in vec4 position;\n"
-    //    "layout (location = 1) in vec4 colors;\n"
-    //    "out vec4 outcolors;\n"
-    //    "void main() { outcolors = colors; gl_Position = position; }";
-
-    //const char * basicFrag =
-    //    "#version 430 core\n"
-    //    "out vec4 vertColor;\n"
-    //    "in vec4 outcolors;\n"
-    //    "void main() { vertColor = outcolors; }";
-
-    //Shader basicShad = MakeShader(basicVert, basicFrag);
 
     // Model matrix - this will transform the object into world space
     glm::mat4 Triangle_Model = glm::identity<glm::mat4>();
@@ -69,21 +55,21 @@ int main()
         Window.Clear();
 
         // Setup my uniforms
-        SetUniform(cameraShaderFromFile, 0, Camera_Proj);
-        SetUniform(cameraShaderFromFile, 1, Camera_View);
-        SetUniform(cameraShaderFromFile, 2, Triangle_Model);
+        SetUniform(TexShadFromFile, 0, Camera_Proj);
+        SetUniform(TexShadFromFile, 1, Camera_View);
+        SetUniform(TexShadFromFile, 2, Triangle_Model);
 
-        SetUniform(cameraShaderFromFile, 3, (float)glfwGetTime());
-        SetUniform(cameraShaderFromFile, 4, 3.0f);
+        //SetUniform(TexShaderFromFile, 3, (float)glfwGetTime());
+        //SetUniform(TexShaderFromFile, 4, 3.0f);
 
         // draw the red triangle
         //Draw(basicShad, basicTriangleGeo);
-        Draw(cameraShaderFromFile, basicTriangleGeo);
+        Draw(TexShadFromFile, basicTriangleGeo);
     }
 
     FreeGeometry(basicTriangleGeo);
 
-    FreeShader(cameraShaderFromFile);
+    FreeShader(basicShaderFromFile);
 
     Window.Term();
 

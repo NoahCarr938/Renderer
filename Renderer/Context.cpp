@@ -24,6 +24,8 @@ bool aie::Context::Init(int Width, int Height, const char* Title)
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
 
+    glClearColor(0.0f, 0.75f, 0.75f, 1);
+
 
 
     return false;
