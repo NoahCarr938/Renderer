@@ -11,15 +11,8 @@ int main()
     Context Window;
     Window.Init(640, 480, "Hello Window");
 
-    Vertex triVerts[] =
-    {
-        {{ -.5f, -.5f, 0, 1 }, {0.0f, 0.0f } }, // bottom left
-        {{ .5f, -.5f, 0, 1 }, { 1.0f, 0.0f } }, // bottom right
-        {{ 0, .5f, 0, 1 }, { .5f, 1.0f} }  // top
-    };
-    unsigned int triIndices[] = { 0, 1, 2 };
-
-    Geometry basicTriangleGeo = MakeGeometry(triVerts, 3, triIndices, 3);
+    Geometry LoadSpear = LoadGeometry("Res/obj/soulspear.obj");
+    Texture SpearTex = LoadTexture("Res/img/soulspear_diffuse.tga");
 
     Shader basicShaderFromFile = LoadShader("Res/Shaders/Basic.vert", "Res/Shaders/Basic.frag");
     Shader cameraShaderFromFile = LoadShader("Res/Shaders/BasicCamera.vert", "Res/Shaders/Basic.frag");
@@ -27,12 +20,21 @@ int main()
     
 
     // Model matrix - this will transform the object into world space
-    glm::mat4 Triangle_Model = glm::identity<glm::mat4>();
+    //glm::mat4 Triangle_Model = glm::identity<glm::mat4>();
+    glm::mat4 Spear_Model = glm::identity<glm::mat4>();
+
+    // define ambient color
+    glm::vec3 ambient(0.2f, 0.2f, 0.2f);
+
+    // NEW: define sun direction
+    glm::vec3 sunDirection(0, 0, 1);
+
+    glm::vec3 lightColor(1, 0, 0);
 
     // View Matrix - this makes things relative to the camera (i.e, puts the camera at the center of the world)
     glm::mat4 Camera_View = glm::lookAt(
-        glm::vec3(0, 1, 20), // eye
-        glm::vec3(0, 5, 0), // look at position
+        glm::vec3(0, 1, 0), // eye
+        glm::vec3(0, 0, 0), // look at position
         glm::vec3(0, 1, 0) // up direction
     ); 
 
@@ -44,7 +46,7 @@ int main()
         1000.0f // Far-Plane
     );
 
-
+    
 
     while (!Window.ShouldClose())
     {
@@ -55,21 +57,21 @@ int main()
         Window.Clear();
 
         // Setup my uniforms
-        SetUniform(TexShadFromFile, 0, Camera_Proj);
-        SetUniform(TexShadFromFile, 1, Camera_View);
-        SetUniform(TexShadFromFile, 2, Triangle_Model);
+        SetUniform(TexShadFromFile, 0, Camera_Proj);  // projection mat
+        SetUniform(TexShadFromFile, 1, Camera_View);  // view mat
+        SetUniform(TexShadFromFile, 2, Spear_Model);  // model mat
 
-        //SetUniform(TexShaderFromFile, 3, (float)glfwGetTime());
-        //SetUniform(TexShaderFromFile, 4, 3.0f);
+        SetUniform(TexShadFromFile, 3, SpearTex, 0);   // albedo (main color)
+        SetUniform(TexShadFromFile, 4, ambient);   // ambient light
+        SetUniform(TexShadFromFile, 5, sunDirection); // NEW: directional light
+        SetUniform(TexShadFromFile, 6, lightColor);
 
-        // draw the red triangle
-        //Draw(basicShad, basicTriangleGeo);
-        Draw(TexShadFromFile, basicTriangleGeo);
+        Draw(TexShadFromFile, LoadSpear);
     }
 
-    FreeGeometry(basicTriangleGeo);
-
-    FreeShader(basicShaderFromFile);
+    FreeGeometry(LoadSpear);
+    FreeShader(TexShadFromFile);
+    FreeTexture(SpearTex);
 
     Window.Term();
 

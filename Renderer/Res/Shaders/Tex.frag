@@ -1,13 +1,20 @@
 #version 430 core
 
-in vec2 vertUV;
+layout (location = 3) unifrom sampler2D albedo;
+layout (location = 4) uniform vec3 ambientLightColor;
+layout (location = 5) uniform vec3 lightDir;
 
-out vec4 vertColor;
+in vec2 vUV;
+in vec3 vNormal;
 
-layout (location = 3) uniform float time;
+out vec4 fragColor;
 
 void main()
 {
-// red and green to illustrate that uvs are working
-   vertColor = vec4(vertUV.x, vertUV.y, 0, 1);
+   float d = max(0, dot(vNormal, -lightDir));
+   vec3 diffuse = d * lightColor;
+   vec4 baseColor = texture(albedo, vUV);
+
+   fragColor.xyz = baseColor.xyz * (ambientLightColor + diffuse);
+   fragColor.a = baseColor.a;
 }

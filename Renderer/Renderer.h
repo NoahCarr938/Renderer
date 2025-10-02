@@ -6,6 +6,7 @@ namespace aie
     struct Vertex
     {
         glm::vec4 Pos;
+        glm::vec4 Normals;
         //glm::vec4 Color;
         glm::vec2 UVs;
     };
@@ -29,6 +30,8 @@ namespace aie
 
     Geometry MakeGeometry(const Vertex* const Verts, GLsizei VertCount, const GLuint* const Indicies, GLsizei IndexCount);
     void FreeGeometry(Geometry& Geo);
+    Geometry LoadGeometry(const char* filePath);
+
     Shader LoadShader(const char* VertPath, const char* FragPath);
     // Need both a shad and geometry to draw something so make a func for this.
     Shader MakeShader(const char* vertSource, const char* fragSource);
@@ -40,6 +43,7 @@ namespace aie
     Texture LoadTexture(const char* ImagePath);
     // free a texture in open gl
     void FreeTexture(Texture& Tex);
+
     void Draw(const Shader& shad, const Geometry& geo);
     // Sets a uniform (like a global variable for the shader
     // @param Shad The Shader.
@@ -52,5 +56,6 @@ namespace aie
     // the actual texture object (containing the OGL name)
     // the slot that will be actually assigned to the shader
     void SetUniform(const Shader& shad, GLuint location, const Texture& tex, int TextureSlot);
+    void SetUniform(const Shader& shad, GLuint location, const glm::vec3& value);
 }
 
