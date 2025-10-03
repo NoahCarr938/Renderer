@@ -19,7 +19,6 @@ int main()
     Shader newShad = LoadShader("Res/Shaders/BasicCamera.vert", "Res/Shaders/Tex.frag");
 
     // Model matrix - this will transform the object into world space
-    //glm::mat4 Triangle_Model = glm::identity<glm::mat4>();
     glm::mat4 Spear_Model = glm::identity<glm::mat4>();
 
     // define ambient color

@@ -12,8 +12,8 @@ layout (location = 1) uniform mat4 view;
 layout (location = 2) uniform mat4 model;
 
 
-out vec2 vUV;
-out vec3 vNormal;
+out vec2 vertUV;
+out vec3 vertNormal;
 out vec4 vertPos;
 
 void main()

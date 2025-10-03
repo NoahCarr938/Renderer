@@ -57,5 +57,9 @@ namespace aie
     // the slot that will be actually assigned to the shader
     void SetUniform(const Shader& shad, GLuint location, const Texture& value, int TextureSlot);
     void SetUniform(const Shader& shad, GLuint location, const glm::vec3& value);
+
+    bool CheckShader(const Shader& shad);
+
+    bool CheckSubShader(GLuint subshader);
 }
 

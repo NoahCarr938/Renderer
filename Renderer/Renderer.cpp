@@ -6,6 +6,7 @@
 #include <stb_image.h>
 #define TINYOBJLOADER_IMPLEMENTATION 1
 #include "tiny_obj_loader.h"
+#include <iostream>
 
 
 
@@ -152,6 +153,8 @@ namespace aie
         glShaderSource(frag, 1, &fragSource, 0);
         glCompileShader(vert);
         glCompileShader(frag);
+        assert(CheckSubShader(vert));
+        assert(CheckSubShader(frag));
 
         // Now the shader should be able to compile, now attach it to the shader program and link it.
 
@@ -284,6 +287,60 @@ namespace aie
     void SetUniform(const Shader& shad, GLuint location, const glm::vec3& value)
     {
         glProgramUniform3fv(shad.Program, location, 1, glm::value_ptr(value));
+    }
+
+    /**
+     * Checks if shader program is linking correctly.
+     *
+     * Linker errors can occur if a later shader is expecting an input
+     * that an earlier shader did not output.
+     *
+     * @return True if good, otherwise false
+     */
+    bool CheckShader(const Shader& Shad)
+    {
+        GLint status = GL_FALSE;
+        glGetProgramiv(Shad.Program, GL_LINK_STATUS, &status);
+
+        if (status != GL_TRUE)
+        {
+            GLint logLength = 0;
+            glGetProgramiv(Shad.Program, GL_INFO_LOG_LENGTH, &logLength);
+            GLchar* log = new GLchar[logLength];
+            glGetProgramInfoLog(Shad.Program, logLength, 0, log);
+
+            std::cerr << log << std::endl;
+
+            delete[] log;
+        }
+
+        return status == GL_TRUE;
+    }
+
+    /**
+       * Checks if shader (not the shader PROGRAM), such as Vertex or Fragment
+       * shader is compiled correctly
+       *
+       * @return True if good, otherwise false
+       */
+    bool CheckSubShader(GLuint subshader)
+    {
+        GLint status = GL_FALSE;
+        glGetShaderiv(subshader, GL_COMPILE_STATUS, &status);
+
+        if (status != GL_TRUE)
+        {
+            GLint logLength = 0;
+            glGetShaderiv(subshader, GL_INFO_LOG_LENGTH, &logLength);
+            GLchar* log = new GLchar[logLength];
+            glGetShaderInfoLog(subshader, logLength, 0, log);
+
+            std::cerr << log << std::endl;
+
+            delete[] log;
+        }
+
+        return status == GL_TRUE;
     }
 
 }
