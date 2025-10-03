@@ -10,12 +10,13 @@ public:
 	// Should we name it the same as the name type?
 	Transform MyTransform;
 	Geometry * Geo;
+    Shader * Shad;
+	Shader * TexShad;
+	Texture * Tex;
 
-	Shader * Shad;
 
 	Object();
-
-	virtual void Tick(float deltaTime) {}
+	virtual void Tick(float deltaTime);
 	virtual void Draw() const;
 };
 

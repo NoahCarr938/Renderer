@@ -14,13 +14,23 @@ layout (location = 2) uniform mat4 model;
 
 out vec2 vUV;
 out vec3 vNormal;
+out vec4 vertPos;
 
 void main()
 {  
-// exports to fragment shader
-   gl_Position = proj * view * model * myPosition;
-   vUV = uv;
+    //EXPORTS to FRAGMENT SHADER
+    vertPos = position;
+    vertNormal = mat3(transpose(inverse(model))) * normal.xyz;
+    vertUV = uv;
+    //vertUV.x += sin(time);
 
-   // New: Transform normals into world-space (sans translation)
-   vNormal = mat3(transpose)inverse(model))) * normal;
+    //VERTEX SHADER LOGIC POSITION
+    //vec4 myPosition = position;
+    //myPosition.y += sin(time) + displacement;
+
+    //transform object from ...
+    // - OBJECT to WORLD (model)
+    // - WORLD to CAMERA (view)
+    // - CAMERA to CLIP (proj)
+    gl_Position = proj * view * model * position;
 }

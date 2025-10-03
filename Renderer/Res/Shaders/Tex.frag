@@ -3,8 +3,10 @@
 layout (location = 3) unifrom sampler2D albedo;
 layout (location = 4) uniform vec3 ambientLightColor;
 layout (location = 5) uniform vec3 lightDir;
+layout (location = 6) uniform vec3 lightColor;
 
-in vec2 vUV;
+in vec4 vertPos
+in vec2 vertUV;
 in vec3 vNormal;
 
 out vec4 fragColor;
@@ -17,4 +19,6 @@ void main()
 
    fragColor.xyz = baseColor.xyz * (ambientLightColor + diffuse);
    fragColor.a = baseColor.a;
+
+   fragColor = texture(albedo, vertUV);
 }

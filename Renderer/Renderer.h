@@ -7,8 +7,8 @@ namespace aie
     {
         glm::vec4 Pos;
         glm::vec4 Normals;
-        //glm::vec4 Color;
         glm::vec2 UVs;
+        //glm::vec4 Color;
     };
 
     struct Geometry
@@ -55,7 +55,7 @@ namespace aie
     // the shader, the location (should match what's given in the Shader source code
     // the actual texture object (containing the OGL name)
     // the slot that will be actually assigned to the shader
-    void SetUniform(const Shader& shad, GLuint location, const Texture& tex, int TextureSlot);
+    void SetUniform(const Shader& shad, GLuint location, const Texture& value, int TextureSlot);
     void SetUniform(const Shader& shad, GLuint location, const glm::vec3& value);
 }
 
