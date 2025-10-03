@@ -22,12 +22,14 @@ int main()
     glm::mat4 Spear_Model = glm::identity<glm::mat4>();
 
     // define ambient color
-    glm::vec3 ambient(1.0f, 1.0f, 1.0f);
+    glm::vec3 ambient(2.0f, 2.0f, 2.0f);
 
     // NEW: define sun direction
-    glm::vec3 sunDirection(0, 1, -1);
+    glm::vec3 sunDirection(1, 0, 1);
+    glm::vec3 sunDirection2(2, 0, 2);
 
-    glm::vec3 lightColor(1, 0, 0);
+    glm::vec3 lightColor(255, 0, 0);
+    glm::vec3 lightColor2(0, 255, 0);
 
     // View Matrix - this makes things relative to the camera (i.e, puts the camera at the center of the world)
     glm::mat4 Camera_View = glm::lookAt(
@@ -63,6 +65,8 @@ int main()
         SetUniform(newShad, 4, ambient);   // ambient light
         SetUniform(newShad, 5, sunDirection); // NEW: directional light
         SetUniform(newShad, 6, lightColor); // albedo (main color)
+        SetUniform(newShad, 7, sunDirection2);
+        SetUniform(newShad, 8, lightColor2);
 
         Draw(newShad, LoadSpear);
     }

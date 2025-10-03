@@ -19,9 +19,10 @@ out vec4 vertPos;
 void main()
 {  
     //EXPORTS to FRAGMENT SHADER
+    gl_Position = proj * view * model * position;
     vertPos = position;
-    vertNormal = mat3(transpose(inverse(model))) * normal.xyz;
     vertUV = uv;
+    vertNormal = mat3(transpose(inverse(model))) * normal.xyz;
     //vertUV.x += sin(time);
 
     //VERTEX SHADER LOGIC POSITION
@@ -32,5 +33,5 @@ void main()
     // - OBJECT to WORLD (model)
     // - WORLD to CAMERA (view)
     // - CAMERA to CLIP (proj)
-    gl_Position = proj * view * model * position;
+    
 }
