@@ -14,8 +14,10 @@ int main()
     Context Window;
     Window.Init(640, 480, "Hello Window");
 
-    Geometry LoadSpear = LoadGeometry("Res/obj/soulspear.obj");
-    Texture SpearTex = LoadTexture("Res/img/soulspear_diffuse.tga");
+    //Geometry LoadSpear = LoadGeometry("Res/obj/soulspear.obj");
+    Geometry LoadSpear = LoadGeometry("Res/obj/cube.obj");
+    //Texture SpearTex = LoadTexture("Res/img/soulspear_diffuse.tga");
+    Texture SpearTex = LoadTexture("Res/img/terry.png");
     Shader newShad = LoadShader("Res/Shaders/BasicCamera.vert", "Res/Shaders/Tex.frag");
 
     // Model matrix - this will transform the object into world space
