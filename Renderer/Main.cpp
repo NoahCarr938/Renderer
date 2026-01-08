@@ -17,7 +17,7 @@ int main()
     //Geometry LoadSpear = LoadGeometry("Res/obj/soulspear.obj");
     Geometry LoadSpear = LoadGeometry("Res/obj/cube.obj");
     //Texture SpearTex = LoadTexture("Res/img/soulspear_diffuse.tga");
-    Texture SpearTex = LoadTexture("Res/img/terry.png");
+    Texture SpearTex = LoadTexture("Res/img/Gojira.PNG");
     Shader newShad = LoadShader("Res/Shaders/BasicCamera.vert", "Res/Shaders/Tex.frag");
 
     // Model matrix - this will transform the object into world space
